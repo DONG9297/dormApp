@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>注册</title>
+</head>
+<body>
+<h1>注册</h1>
+<table>
+    <tr>
+        <td>手机号：</td>
+        <td>
+            <input id="phone" type="text">
+        </td>
+        <td><label id="phone_prompt" style="color: darkred"></label></td>
+    </tr>
+    <tr>
+        <td>学号：</td>
+        <td>
+            <input id="stu_id" type="text">
+        </td>
+        <td><label id="stu_prompt" style="color: darkred"></label></td>
+    </tr>
+    <tr>
+        <td>姓名：</td>
+        <td>
+            <input id="name" type="text">
+        </td>
+        <td><label id="name_prompt" style="color: darkred"></label></td>
+    </tr>
+    <tr>
+        <td>性别：</td>
+        <td>
+            <select id="gender">
+                <option value="">未选择</option>
+                <option value="男">男</option>
+                <option value="女">女</option>
+            </select>
+            <label> </label>
+            <label id="gender_prompt" style="color: darkred"></label>
+        </td>
+    </tr>
+    <tr>
+        <td>密码：</td>
+        <td>
+            <input id="password" name="password" type="password">
+        </td>
+        <td><label id="password_prompt" style="color: darkred"></label></td>
+    </tr>
+</table>
+<p>
+    <input id="btn" type="submit" value="注册">
+</p>
+<p>
+    <span id="result"></span>
+</p>
+
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+<script>
+    // 实时检验手机号并提示
+    $("#phone").change(function () {
+        var url = "/user/checkPhone";
+        //获取用户输入的用户名
+        var phone = $(this).val();
+        //设置请求参数
+        var param = {"phone": phone};
+        //发送Ajax请求
+        $.post(url, param, function (res) {
+            //将响应信息设置到span元素中
+            $("#phone_prompt").text(res)
+        });
+    });
+    // 实时检验学号并提示
+    $("#stu_id").change(function () {
+        var url = "/user/checkStudentID";
+        var stu_id = $(this).val();
+        var param = {"stu_id": stu_id};
+        $.post(url, param, function (res) {
+            $("#stu_prompt").text(res)
+        });
+    });
+    // 实时检验姓名并提示
+    $("#name").change(function () {
+        var url = "/user/checkName";
+        var name = $(this).val();
+        var param = {"name": name};
+        $.post(url, param, function (res) {
+            $("#name_prompt").text(res)
+        });
+    });
+    // 实时检验性别并提示
+    $("#gender").change(function () {
+        var gender = $(this).val();
+        if (gender == "") {
+            $("#gender_prompt").text("请选择性别");
+        } else {
+            $("#gender_prompt").text("");
+        }
+    });
+    // 实时检验密码并提示
+    $("#password").change(function () {
+        var url = "/user/checkPassword";
+        var password = $(this).val();
+        var param = {"password": password};
+        $.post(url, param, function (res) {
+            $("#password_prompt").text(res)
+        });
+    });
+    // 提交表单
+    $("#btn").click(function () {
+        var url = "/user/register";
+        var phone = $("#phone").val();
+        var stu_id = $("#stu_id").val();
+        var name = $("#name").val();
+        var gender = $("#gender").val();
+        var password = $("#password").val();
+        var param = {
+            "phone": phone,
+            "stu_id": stu_id,
+            "name": name,
+            "gender": gender,
+            "password": password
+        };
+        $.post(url, param, function (res) {
+            $("#result").html(res)
+        });
+    })
+</script>
+</body>
+</html>

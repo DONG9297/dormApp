@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>登录</title>
+</head>
+<body>
+<h1>登录</h1>
+<table>
+    <tr>
+        <td>手机号：</td>
+        <td><input id="phone" name="phone" type="text"></td>
+        <td><label id="phone_prompt" style="color: darkred"></label></td>
+    </tr>
+    <tr>
+        <td>密码：</td>
+        <td><input id="password" name="password" type="password"></td>
+        <td><label id="password_prompt" style="color: darkred"></label></td>
+    </tr>
+</table>
+<p>
+    <input id="btn" type="submit" value="登录">
+</p>
+<p>
+    <span id="result">
+    <a href="/user/register">注册</a>
+    </span>
+</p>
+
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+<script>
+    // 实时检验手机号并提示
+    $("#phone").change(function () {
+        var url = "/user/checkPhone";
+        //获取用户输入的用户名
+        var phone = $(this).val();
+        //设置请求参数
+        var param = {"phone": phone};
+        //发送Ajax请求
+        $.post(url, param, function (res) {
+            //将响应信息设置到span元素中
+            $("#phone_prompt").text(res)
+        });
+    });
+    // 实时检验密码并提示
+    $("#password").change(function () {
+        var url = "/user/checkPassword";
+        var password = $(this).val();
+        var param = {"password": password};
+        $.post(url, param, function (res) {
+            $("#password_prompt").text(res)
+        });
+    });
+    // 提交表单
+    $("#btn").click(function () {
+        var url = "/user/login";
+        var phone = $("#phone").val();
+        var password = $("#password").val();
+        var param = {
+            "phone": phone,
+            "password": password
+        };
+        $.post(url, param, function (res) {
+            $("#result").html(res)
+        });
+    })
+</script>
+</body>
+</html>

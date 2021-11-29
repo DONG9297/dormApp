@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+
+<body>
+<div>
+    <a href="/user/register">注册</a>
+    <a href="/user/logout">退出</a>
+    <a href="/order/choose">选宿舍</a>
+    <a href="/order/result">查看选宿舍结果</a>
+</div>
+<br>
+<div>
+    <h3><%= user.name %>，你好！你的认证码是 <%= user.uid %></h3>
+    <table >
+        <tr>
+            <td>手机号：</td>
+            <td><%= user.phone %></td>
+        </tr>
+        <tr>
+            <td>学号：</td>
+            <td><%= user.stu_id %></td>
+        </tr>
+        <tr>
+            <td>性别：</td>
+            <td><%= user.gender %></td>
+        </tr>
+    </table>
+</div>
+</body>
+
+</html>

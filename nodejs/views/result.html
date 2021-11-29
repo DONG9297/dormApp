@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选宿舍结果</title>
+</head>
+<body>
+<div>
+    <a href="/">主页</a>
+    <a href="/user/register">注册</a>
+    <a href="/user/logout">退出</a>
+    <a href="/order/choose">选宿舍</a>
+</div>
+<br>
+<div>
+    <% if (status==true){ %>
+    <h3><%= user_name %>，恭喜你选宿舍成功！</h3>
+    <table>
+        <tr>
+            <td>宿舍楼：</td>
+            <td><%= dorm_info.building_name %></td>
+        </tr>
+        <tr>
+            <td>单元：</td>
+            <td><%= dorm_info.unit_name %></td>
+        </tr>
+        <tr>
+            <td>宿舍号：</td>
+            <td><%= dorm_info.dorm_name %></td>
+        </tr>
+    </table>
+    <% } else { %>
+    <h3><%= user_name %>，未查询到结果</h3>
+    <% } %>
+</div>
+</body>
+</html>
