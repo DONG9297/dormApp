@@ -1,3 +1,4 @@
+SET NAMES 'utf8';
 -- 建库
 CREATE DATABASE IF NOT EXISTS `userdb` default charset utf8 COLLATE utf8_general_ci;
 -- 切换数据库

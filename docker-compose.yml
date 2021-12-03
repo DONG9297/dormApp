@@ -1,0 +1,72 @@
+# docker引擎对应所支持的docker-compose文本格式，可对照Compose file version 3 reference查询
+version: "3"
+
+# 工程的服务配置列表
+services:
+  db:
+    # image: mysql:5.7
+    # 基于Dockerfile文件构建镜像时使用的属性
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    ports:
+      - "3306:3306"
+    container_name: db
+    # 设置容器的环境变量
+    environment:
+      - "MYSQL_ROOT_PASSWORD=123456"
+
+  register:
+    build:
+      context: ./register
+      dockerfile: Dockerfile
+    ports:
+      - "10711:10711"
+    container_name: register
+    # 本服务的运行需要依赖的其它服务，控制启动顺序
+    depends_on:
+      - db
+    links:
+      - db
+
+  login:
+    build:
+      context: ./login
+      dockerfile: Dockerfile
+    ports:
+      - "10712:10712"
+    container_name: login
+    depends_on:
+      - db
+    links:
+      - db
+
+  dorm:
+    build:
+      context: ./dorm
+      dockerfile: Dockerfile
+    ports:
+      - "10713:10713"
+    container_name: dorm
+    depends_on:
+      - db
+    links:
+      - db
+
+  nodejs:
+    build:
+      context: ./nodejs
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: nodejs
+    depends_on:
+      - db
+      - dorm
+      - login
+      - register
+    links:
+      - db
+      - dorm
+      - login
+      - register
