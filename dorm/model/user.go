@@ -37,13 +37,13 @@ func GetUserByID(ID int) (user *User, err error) {
 	return user, nil
 }
 
-func GetUserByUID(UID string) (user *User,err error) {
+func GetUserByUID(UID string) (user *User, err error) {
 	sqlStr := "select user_id, uid, phone, stu_id, name, gender, password from users where uid = ?"
 	row := utils.Db.QueryRow(sqlStr, UID)
 	user = &User{}
 	err = row.Scan(&user.ID, &user.UID, &user.Phone, &user.StudentID, &user.Name, &user.Gender, &user.Password)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	return user,nil
+	return user, nil
 }

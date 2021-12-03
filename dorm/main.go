@@ -19,8 +19,8 @@ func main() {
 	}()
 
 	http.HandleFunc("/choose", controller.ChooseDorm)
-	http.HandleFunc("/getDormList", controller.GetDormList)
-	http.HandleFunc("/getResult", controller.GetResult)
+	http.HandleFunc("/get_dormList", controller.GetDormList)
+	http.HandleFunc("/get_result", controller.GetResult)
 	http.ListenAndServe(":10713", nil)
 
 }

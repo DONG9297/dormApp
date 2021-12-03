@@ -1,5 +1,5 @@
 #基础镜像使用 mysql:5.7.9
-FROM mysql:5.7.9
+FROM mysql:5.7
 
 #定义会被容器自动执行的目录
 ENV AUTO_RUN_DIR /docker-entrypoint-initdb.d

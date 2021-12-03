@@ -37,14 +37,14 @@ func DeleteSessionByUser(userID int) error {
 }
 
 //GetSession 根据session的Id值从数据库中查询 Session
-func GetSession(sessionID string) (sess *Session) {
+func GetSession(sessionID string) (sess *Session, err error) {
 	sqlStr := "select session_id, user_id from sessions where session_id = ?"
 	row := Db.QueryRow(sqlStr, sessionID)
 	//扫描数据库中的字段值为Session的字段赋值
 	sess = &Session{}
-	err := row.Scan(&sess.SessionID, &sess.UserID)
+	err = row.Scan(&sess.SessionID, &sess.UserID)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return sess
+	return sess, nil
 }

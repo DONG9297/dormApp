@@ -109,8 +109,6 @@ router.post('/login', (req, res) => {
                 var cookieValue = response.body.data.session.session_id;
                 res.cookie("name", cookieValue);//,{maxAge: 6000}
                 res.send("登录成功，<a href='/'>去首页</a>，或<a href='/user/logout'\>退出</a>");
-            } else {
-                res.send(response.body.message);
             }
         })
     } else {

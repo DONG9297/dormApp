@@ -12,9 +12,7 @@ var (
 )
 
 func init() {
-	// todo mysql
-	Db, err = sql.Open("mysql",
-		"root:123456@tcp(db:3336)/userdb")
+	Db, err = sql.Open("mysql", "root:123456@tcp(db:3306)/userdb")
 	if err != nil {
 		panic(err.Error())
 	}

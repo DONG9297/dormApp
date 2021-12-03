@@ -1,9 +1,7 @@
 -- 建库
-CREATE
-DATABASE IF NOT EXISTS `userdb` default charset utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `userdb` default charset utf8 COLLATE utf8_general_ci;
 -- 切换数据库
-use
-`userdb`;
+use `userdb`;
 
 -- 用户表
 DROP TABLE IF EXISTS `users`;
@@ -443,3 +441,6 @@ VALUES (NULL, 'e1111', '女', '2', '1', '14'),
        (NULL, 'f3223', '男', '3', '2', '19'),
        (NULL, 'f3224', '男', '5', '4', '19'),
        (NULL, 'f3225', '男', '3', '1', '19');
+
+INSERT INTO userdb.users (user_id, uid, phone, stu_id, name, gender, password)
+VALUES (1, '12345678', '18312345678', '1234567890', '张三', '女', 'e10adc3949ba59abbe56e057f20f883e');

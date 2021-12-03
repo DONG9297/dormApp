@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"login/model"
@@ -24,6 +23,7 @@ func IsLogged(w http.ResponseWriter, r *http.Request) {
 			result := utils.Result{
 				Code:    http.StatusInternalServerError,
 				Message: "解析请求失败",
+				Data:    map[string]interface{}{"err": err},
 			}
 			result.Response(w)
 			return
@@ -31,10 +31,10 @@ func IsLogged(w http.ResponseWriter, r *http.Request) {
 		sessionID = session.SessionID
 	}
 
-	session := utils.GetSession(sessionID)
-	if session != nil && session.SessionID == sessionID {
-		user := model.GetUserByID(session.UserID)
-		if user != nil && user.ID == session.UserID {
+	session, err := utils.GetSession(sessionID)
+	if err == nil && session.SessionID == sessionID {
+		user, err := model.GetUserByID(session.UserID)
+		if err == nil && user.ID == session.UserID {
 			// 返回已登录消息
 			result := utils.Result{
 				Code:    http.StatusOK,
@@ -69,6 +69,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			result := utils.Result{
 				Code:    http.StatusInternalServerError,
 				Message: "解析请求失败",
+				Data:    map[string]interface{}{"err": err},
 			}
 			result.Response(w)
 			return
@@ -78,8 +79,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 判断用户名和密码是否正确
-	user := model.GetUserByPhone(phone)
-	if user == nil || user.Password != password {
+	user, err := model.GetUserByPhone(phone)
+	if err != nil || user.Password != password {
 		//手机号或密码不正确
 		result := utils.Result{
 			Code:    http.StatusInternalServerError,
@@ -92,9 +93,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Session
 	// 生成UUID作为Session的id
 	u := new([16]byte)
-	_, err := rand.Read(u[:])
+	_, err = rand.Read(u[:])
 	if err != nil {
-		log.Fatalln("Cannot generate UUID", err)
+		result := utils.Result{
+			Code:    http.StatusInternalServerError,
+			Message: "无法登录",
+			Data:    map[string]interface{}{"err": err},
+		}
+		result.Response(w)
+		return
 	}
 	u[8] = (u[8] | 0x40) & 0x7F
 	u[6] = (u[6] & 0xF) | (0x4 << 4)
@@ -141,20 +148,22 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 删除数据库中与之对应的Session
-	session := utils.GetSession(sessionID)
-	if session == nil {
-		result := utils.Result{
-			Code:    http.StatusInternalServerError,
-			Message: "未登录",
-		}
-		result.Response(w)
-		return
-	}
-	err := utils.DeleteSessionByUser(session.UserID)
+	session, err := utils.GetSession(sessionID)
 	if err != nil {
 		result := utils.Result{
 			Code:    http.StatusInternalServerError,
 			Message: "未登录",
+			Data:    map[string]interface{}{"err": err},
+		}
+		result.Response(w)
+		return
+	}
+	err = utils.DeleteSessionByUser(session.UserID)
+	if err != nil {
+		result := utils.Result{
+			Code:    http.StatusInternalServerError,
+			Message: "未登录",
+			Data:    map[string]interface{}{"err": err},
 		}
 		result.Response(w)
 		return

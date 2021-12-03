@@ -15,24 +15,24 @@ type User struct {
 	Password  string `json:"password"`
 }
 
-func GetUserByPhone(phone string) (user *User) {
+func GetUserByPhone(phone string) (user *User, err error) {
 	sqlStr := "select user_id, uid, phone, stu_id, name, gender, password from users where phone = ?"
 	row := utils.Db.QueryRow(sqlStr, phone)
 	user = &User{}
-	err := row.Scan(&user.ID, &user.UID, &user.Phone, &user.StudentID, &user.Name, &user.Gender, &user.Password)
+	err = row.Scan(&user.ID, &user.UID, &user.Phone, &user.StudentID, &user.Name, &user.Gender, &user.Password)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return user
+	return user, nil
 }
 
-func GetUserByID(ID int) (user *User) {
+func GetUserByID(ID int) (user *User, err error) {
 	sqlStr := "select user_id, uid, phone, stu_id, name, gender, password from users where user_id = ?"
 	row := utils.Db.QueryRow(sqlStr, ID)
 	user = &User{}
-	err := row.Scan(&user.ID, &user.UID, &user.Phone, &user.StudentID, &user.Name, &user.Gender, &user.Password)
+	err = row.Scan(&user.ID, &user.UID, &user.Phone, &user.StudentID, &user.Name, &user.Gender, &user.Password)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return user
+	return user, nil
 }

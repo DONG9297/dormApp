@@ -55,7 +55,7 @@ func GetAvailableDormInfos(availableBeds int, buildingName, gender string) (dorm
 	return dormInfos, nil
 }
 
-func GetDormInfoByDormID(ID int) (*DormInfo,  error) {
+func GetDormInfoByDormID(ID int) (*DormInfo, error) {
 	sqlStr := "select building_name, unit_name, dorm_name, dorm_id from dorm_list where dorm_id =?"
 	row := utils.Db.QueryRow(sqlStr, ID)
 	dormInfo := &DormInfo{}

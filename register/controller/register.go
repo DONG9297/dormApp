@@ -20,6 +20,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			result := utils.Result{
 				Code:    http.StatusInternalServerError,
 				Message: "解析请求失败",
+				Data:    map[string]interface{}{"err": err},
 			}
 			result.Response(w)
 			return
@@ -55,6 +56,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		result := utils.Result{
 			Code:    http.StatusInternalServerError,
 			Message: "添加用户失败",
+			Data:    map[string]interface{}{"err": err},
 		}
 		result.Response(w)
 		return

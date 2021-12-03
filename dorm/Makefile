@@ -1,5 +1,5 @@
 NAME = dorm
-TAG= 1.0.0
+TAG= 1.0.1
 INSTANCE = dorm
 DB_INSTANCE = db
 
@@ -9,4 +9,4 @@ docker:
 	docker build -t $(NAME):$(TAG) .
 
 run:
-	docker run --name $(INSTANCE) -p 10713:10713 --link $(DB_INSTANCE) -e MYSQL_HOST="$(DB_INSTANCE)" -d $(NAME):$(TAG) # -e MYSQL_HOST="$(DB_INSTANCE)"
+	docker run --name $(INSTANCE) -p 10713:10713 --link $(DB_INSTANCE) -d $(NAME):$(TAG)

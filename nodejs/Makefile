@@ -1,5 +1,5 @@
 NAME = nodejs
-TAG= 1.0.0
+TAG= 1.0.1
 INSTANCE = nodejs
 DB_INSTANCE = db
 LOGIN_APP = login
@@ -12,4 +12,4 @@ docker:
 	docker build -t $(NAME):$(TAG) .
 
 run:
-	docker run --name $(INSTANCE) -p 8080:8080 --link $(DORM_APP) --link $(REGISTER_APP) --link $(LOGIN_APP) --link $(DB_INSTANCE) -e MYSQL_HOST="$(DB_INSTANCE)" -d $(NAME):$(TAG)
+	docker run --name $(INSTANCE) -p 8080:8080 --link $(DORM_APP) --link $(REGISTER_APP) --link $(LOGIN_APP) --link $(DB_INSTANCE) -d $(NAME):$(TAG)

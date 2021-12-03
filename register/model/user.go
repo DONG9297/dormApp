@@ -19,17 +19,6 @@ type User struct {
 	Password  string `json:"password"`
 }
 
-func GetUserByPhone(phone string) (user *User) {
-	sqlStr := "select user_id, uid, phone, stu_id, name, gender, password from users where phone = ?"
-	row := utils.Db.QueryRow(sqlStr, phone)
-	user = &User{}
-	err := row.Scan(&user.ID, &user.UID, &user.Phone, &user.StudentID, &user.Name, &user.Gender, &user.Password)
-	if err != nil {
-		return nil
-	}
-	return user
-}
-
 func AddUser(user *User) (err error) {
 	var uid int
 	for {
