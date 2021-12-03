@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
         if (flag) {
             res.render('index.html', {user: response.body.data.user});
         } else {
-            res.send("未登录，去<a href='/user/login'\>登录</a>或<a href='/user/register'\>注册</a>");
+            res.send("请<a href='/user/login'\>登录</a>或<a href='/user/register'\>注册</a>");
         }
     })
 })

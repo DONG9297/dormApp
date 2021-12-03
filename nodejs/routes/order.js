@@ -15,7 +15,7 @@ router.get('/choose', (req, res) => {
         if (flag) {
             // 获取宿舍列表
             request({
-                url: "http://dorm:10713/getDormList",
+                url: "http://dorm:10713/get_dormList",
                 method: "POST",
                 json: true,
                 headers: {
@@ -27,7 +27,7 @@ router.get('/choose', (req, res) => {
             }, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     // 获取宿舍列表成功
-                    res.render('dorm.html', {
+                    res.render('choose.html', {
                         gender: gender,
                         dorm_list: response.body.data.dorm_list
                     })
@@ -89,9 +89,8 @@ router.post('/choose', (req, res) => {
 router.get('/result', (req, res) => {
     isLogged(req.cookies, function (flag, response) {
         if (flag) {
-            console.log(response.body.data.user.id);
             request({
-                url: "http://dorm:10713/getResult",
+                url: "http://dorm:10713/get_result",
                 method: "POST",
                 json: true,
                 headers: {
@@ -101,7 +100,6 @@ router.get('/result', (req, res) => {
                     user_id: response.body.data.user.id,
                 }
             }, function (error, resp, body) {
-                console.log(resp)
                 if (!error && resp.statusCode == 200) {
                     res.render('result.html', {
                         user_name: response.body.data.user.name,
