@@ -13,6 +13,13 @@ import (
 func IsLogged(w http.ResponseWriter, r *http.Request) {
 
 	// json 解析请求
+	/*
+		请求格式
+		{
+			"phone": "18312345678",
+			"password": "e10adc3949ba59abbe56e057f20f883e"
+		}
+	*/
 	var sessionID string
 	switch r.Method {
 	case http.MethodPost:
@@ -59,6 +66,13 @@ func IsLogged(w http.ResponseWriter, r *http.Request) {
 func Login(w http.ResponseWriter, r *http.Request) {
 
 	// json 解析请求
+	/*
+		请求格式
+		{
+			"phone": "18312345678",
+			"password": "e10adc3949ba59abbe56e057f20f883e"
+		}
+	*/
 	var phone, password string
 	switch r.Method {
 	case http.MethodPost:
@@ -130,6 +144,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func Logout(w http.ResponseWriter, r *http.Request) {
 
 	// json 解析请求
+	/*
+		请求格式
+		{
+			"phone": "18312345678",
+			"password": "e10adc3949ba59abbe56e057f20f883e"
+		}
+	*/
 	var sessionID string
 	switch r.Method {
 	case http.MethodPost:
