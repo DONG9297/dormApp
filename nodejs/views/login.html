@@ -36,34 +36,30 @@
 <script>
     // 实时检验手机号并提示
     $("#phone").change(function () {
-        var url = "/user/checkPhone";
-        //获取用户输入的用户名
-        var phone = $(this).val();
-        //设置请求参数
-        var param = {"phone": phone};
-        //发送Ajax请求
-        $.post(url, param, function (res) {
-            //将响应信息设置到span元素中
-            $("#phone_prompt").text(res)
-        });
+        //获取用户输入的手机号
+        let phone = $(this).val();
+        if (!/^(13|14|15|17|18)[0-9]{9}$/.test(phone)) {
+            $("#phone_prompt").text("请输入正确的手机号")
+        } else {
+            $("#phone_prompt").text("")
+        }
     });
     // 实时检验密码并提示
     $("#password").change(function () {
-        var url = "/user/checkPassword";
-        var password = $(this).val();
-        var param = {"password": password};
-        $.post(url, param, function (res) {
-            $("#password_prompt").text(res)
-        });
+        let password = $(this).val();
+        if (!/^([\w_]{6,20})$/.test(password)) {
+            $("#password_prompt").text("密码必须是6-20位的字母、数字或下划线")
+        } else {
+            $("#password_prompt").text("")
+        }
     });
+
     // 提交表单
     $("#btn").click(function () {
-        var url = "/user/login";
-        var phone = $("#phone").val();
-        var password = $("#password").val();
-        var param = {
-            "phone": phone,
-            "password": password
+        let url = "/user/login";
+        let param = {
+            "phone": $("#phone").val(),
+            "password": $("#password").val()
         };
         $.post(url, param, function (res) {
             $("#result").html(res)

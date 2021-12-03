@@ -3,12 +3,6 @@ const router = express.Router()
 const request = require('request')
 const {response} = require("express");
 
-router.post(`/checkStuCode`, (req, res) => {
-    if (!/^([0-9]{8})$/.test(req.body.stucode)) {
-        res.send("请输入正确的认证码");
-    } else res.send("");
-})
-
 router.get('/choose', (req, res) => {
     isLogged(req.cookies, function (flag, response) {
         let gender = response.body.data.user.gender;
@@ -32,7 +26,10 @@ router.get('/choose', (req, res) => {
                         dorm_list: response.body.data.dorm_list
                     })
                 } else {
-                    res.send(response.body.message);
+                    res.render('choose.html', {
+                        gender: null,
+                        dorm_list: null
+                    })
                 }
             })
         } else {
@@ -43,17 +40,20 @@ router.get('/choose', (req, res) => {
 
 router.post('/choose', (req, res) => {
     isLogged(req.cookies, function (flag, response) {
-        let gender = response.body.data.user.gender;
+        let data = {
+            user_id: response.body.data.user.id,
+            gender: response.body.data.user.gender,
+            building : req.body.building,
+            stucode0 : req.body.stucode0,
+            stucode1 : req.body.stucode1,
+            stucode2 : req.body.stucode2
+        };
         if (flag) {
-            let building = req.body.building;
-            let stucode0 = req.body.stucode0;
-            let stucode1 = req.body.stucode1;
-            let stucode2 = req.body.stucode2;
             // 判断格式
-            let flag2 = building != null;
-            let flag3 = stucode0 == "" || /^[0-9]{8}$/.test(stucode0);
-            let flag4 = stucode1 == "" || /^[0-9]{8}$/.test(stucode1);
-            let flag5 = stucode2 == "" || /^[0-9]{8}$/.test(stucode2);
+            let flag2 = data.building != null;
+            let flag3 = data.stucode0 == "" || /^[0-9]{8}$/.test(data.stucode0);
+            let flag4 = data.stucode1 == "" || /^[0-9]{8}$/.test(data.stucode1);
+            let flag5 = data.stucode2 == "" || /^[0-9]{8}$/.test(data.stucode2);
 
             if (flag2 && flag3 && flag4 && flag5) {
                 // 发送请求
@@ -64,14 +64,7 @@ router.post('/choose', (req, res) => {
                     headers: {
                         'content-type': 'application/json;charset=UTF-8',
                     },
-                    body: {
-                        user_id: response.body.data.user.id,
-                        gender: gender,
-                        building: building,
-                        stucode0: stucode0,
-                        stucode1: stucode1,
-                        stucode2: stucode2
-                    }
+                    body: data
                 }, function (error, resp, body) {
                     if (!error && resp.statusCode == 200) {
                         res.send("选宿舍提交成功，<a href='/'>去首页</a>，或<a href='/order/result'\>查看结果</a>");

@@ -64,34 +64,31 @@
 <script>
     // 实时检验手机号并提示
     $("#phone").change(function () {
-        var url = "/user/checkPhone";
-        //获取用户输入的用户名
+        //获取用户输入的手机号
         var phone = $(this).val();
-        //设置请求参数
-        var param = {"phone": phone};
-        //发送Ajax请求
-        $.post(url, param, function (res) {
-            //将响应信息设置到span元素中
-            $("#phone_prompt").text(res)
-        });
+        if (!/^(13|14|15|17|18)[0-9]{9}$/.test(phone)) {
+            $("#phone_prompt").text("请输入正确的手机号")
+        } else {
+            $("#phone_prompt").text("")
+        }
     });
     // 实时检验学号并提示
     $("#stu_id").change(function () {
-        var url = "/user/checkStudentID";
         var stu_id = $(this).val();
-        var param = {"stu_id": stu_id};
-        $.post(url, param, function (res) {
-            $("#stu_prompt").text(res)
-        });
+        if (!/^([0-9]{10})$/.test(stu_id)) {
+            $("#stu_prompt").text("请输入正确的学号")
+        } else {
+            $("#stu_prompt").text("")
+        }
     });
     // 实时检验姓名并提示
     $("#name").change(function () {
-        var url = "/user/checkName";
         var name = $(this).val();
-        var param = {"name": name};
-        $.post(url, param, function (res) {
-            $("#name_prompt").text(res)
-        });
+        if (!/^[\u4e00-\u9fa5]{0,10}$/.test(name)) {
+            $("#name_prompt").text("请输入正确的汉语姓名")
+        } else {
+            $("#name_prompt").text("")
+        }
     });
     // 实时检验性别并提示
     $("#gender").change(function () {
@@ -104,27 +101,23 @@
     });
     // 实时检验密码并提示
     $("#password").change(function () {
-        var url = "/user/checkPassword";
         var password = $(this).val();
-        var param = {"password": password};
-        $.post(url, param, function (res) {
-            $("#password_prompt").text(res)
-        });
+        if (!/^([\w_]{6,20})$/.test(password)) {
+            $("#password_prompt").text("密码必须是6-20位的字母、数字或下划线")
+        } else {
+            $("#password_prompt").text("")
+        }
     });
+
     // 提交表单
     $("#btn").click(function () {
-        var url = "/user/register";
-        var phone = $("#phone").val();
-        var stu_id = $("#stu_id").val();
-        var name = $("#name").val();
-        var gender = $("#gender").val();
-        var password = $("#password").val();
-        var param = {
-            "phone": phone,
-            "stu_id": stu_id,
-            "name": name,
-            "gender": gender,
-            "password": password
+        let url = "/user/register";
+        let param = {
+            "phone": $("#phone").val(),
+            "stu_id": $("#stu_id").val(),
+            "name": $("#name").val(),
+            "gender": $("#gender").val(),
+            "password": $("#password").val()
         };
         $.post(url, param, function (res) {
             $("#result").html(res)

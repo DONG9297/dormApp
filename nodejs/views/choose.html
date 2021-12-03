@@ -23,16 +23,17 @@
         <td>房间数量</td>
     </tr>
     <% if (dorm_list != null){%>
-        <% dorm_list.forEach(function(item){ %>
-        <tr>
-            <td><%= item.building_name %></td>
-            <td><%= item.available_beds %></td>
-            <td><%= item.count %></td>
-        </tr>
+    <% dorm_list.forEach(function(item){ %>
+    <tr>
+        <td><%= item.building_name %></td>
+        <td><%= item.available_beds %></td>
+        <td><%= item.count %></td>
+    </tr>
     <% }) %>
     <% } %>
 </table>
 <h1>选宿舍</h1>
+<% if(gender=='女' || gender=='男'){ %>
 <table>
     <tr>
         <td>选择宿舍楼：</td>
@@ -72,6 +73,7 @@
 <p>
     <input id="btn" type="submit" value="提交">
 </p>
+<% } %>
 <p>
     <span id="result"></span>
 </p>
@@ -81,34 +83,34 @@
 
     // 实时检验认证码并提示
     $("#stucode0").change(function () {
-        var url = "/order/checkStuCode";
-        var stucode = $(this).val();
-        var param = {"stucode": stucode};
-        $.post(url, param, function (res) {
-            $("#prompt0").text(res)
-        });
+        let stucode = $(this).val();
+        if (!/^([0-9]{8})$/.test(stucode)) {
+            $("#prompt0").text("请输入正确的认证码");
+        } else {
+            $("#prompt0").text("");
+        }
     });
     $("#stucode1").change(function () {
-        var url = "/order/checkStuCode";
-        var stucode = $(this).val();
-        var param = {"stucode": stucode};
-        $.post(url, param, function (res) {
-            $("#prompt1").text(res)
-        });
+        let stucode = $(this).val();
+        if (!/^([0-9]{8})$/.test(stucode)) {
+            $("#prompt1").text("请输入正确的认证码");
+        } else {
+            $("#prompt1").text("");
+        }
     });
     $("#stucode2").change(function () {
-        var url = "/order/checkStuCode";
-        var stucode = $(this).val();
-        var param = {"stucode": stucode};
-        $.post(url, param, function (res) {
-            $("#prompt2").text(res)
-        });
+        let stucode = $(this).val();
+        if (!/^([0-9]{8})$/.test(stucode)) {
+            $("#prompt2").text("请输入正确的认证码");
+        } else {
+            $("#prompt2").text("");
+        }
     });
 
     // 提交表单
     $("#btn").click(function () {
-        var url = "/order/choose";
-        var param = {
+        let url = "/order/choose";
+        let param = {
             "building": $("#building").val(),
             "stucode0": $("#stucode0").val(),
             "stucode1": $("#stucode1").val(),

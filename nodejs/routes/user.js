@@ -5,28 +5,6 @@ const request = require('request')
 const md5 = require('md5-node')
 const {response} = require("express");
 
-// 实时判断表单格式是否正确
-router.post(`/checkPhone`, (req, res) => {
-    if (!/^(13|14|15|17|18)[0-9]{9}$/.test(req.body.phone)) {
-        res.send("请输入正确的手机号");
-    } else res.send("");
-})
-router.post(`/checkStudentID`, (req, res) => {
-    if (!/^([0-9]{10})$/.test(req.body.stu_id)) {
-        res.send("请输入正确的学号");
-    } else res.send("");
-})
-router.post(`/checkName`, (req, res) => {
-    if (!/^[\u4e00-\u9fa5]{0,10}$/.test(req.body.name)) {
-        res.send("请输入正确的汉语姓名");
-    } else res.send("");
-})
-router.post(`/checkPassword`, (req, res) => {
-    if (!/^([\w_]{6,20})$/.test(req.body.password)) {
-        res.send("密码必须是6-20位的字母、数字或下划线");
-    } else res.send("");
-})
-
 // 注册
 router.get('/register', (req, res) => {
     res.render('register.html');
