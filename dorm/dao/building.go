@@ -1,16 +1,14 @@
-package model
+package dao
 
-import "dorm/utils"
+import (
+	"dorm/model"
+	"dorm/utils"
+)
 
-type Building struct {
-	ID   int
-	Name string
-}
-
-func GetBuildingByName(name string) (building *Building, err error) {
+func GetBuildingByName(name string) (building *model.Building, err error) {
 	sqlStr := "select building_id, name from buildings where name = ?"
 	row := utils.Db.QueryRow(sqlStr, name)
-	building = &Building{}
+	building = &model.Building{}
 	err = row.Scan(&building.ID, &building.Name)
 	if err != nil {
 		return nil, err
@@ -18,10 +16,10 @@ func GetBuildingByName(name string) (building *Building, err error) {
 	return building, nil
 }
 
-func GetBuildingByID(ID int) (building *Building, err error) {
+func GetBuildingByID(ID int) (building *model.Building, err error) {
 	sqlStr := "select building_id, name from buildings where building_id = ?"
 	row := utils.Db.QueryRow(sqlStr, ID)
-	building = &Building{}
+	building = &model.Building{}
 	err = row.Scan(&building.ID, &building.Name)
 	if err != nil {
 		return nil, err
@@ -29,14 +27,14 @@ func GetBuildingByID(ID int) (building *Building, err error) {
 	return building, nil
 }
 
-func GetAllBuildings() (buildings []*Building, err error) {
+func GetAllBuildings() (buildings []*model.Building, err error) {
 	sql := "select building_id, name from buildings"
 	rows, err := utils.Db.Query(sql)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		building := &Building{}
+		building := &model.Building{}
 		err := rows.Scan(&building.ID, &building.Name)
 		if err != nil {
 			return nil, err

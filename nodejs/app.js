@@ -18,6 +18,6 @@ app.use("/user", user);
 app.use("/order", order);
 
 
-app.listen(8080, (res, req) => {
+app.listen(8080, () => {
     console.log('Node app start at port 8080');
 });

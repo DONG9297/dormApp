@@ -1,21 +1,18 @@
-package model
+package dao
 
-import "dorm/utils"
+import (
+	"dorm/model"
+	"dorm/utils"
+)
 
-type Unit struct {
-	ID         int
-	Name       string
-	BuildingID int
-}
-
-func GetUnitsByBuilding(BuildingID int) (units []*Unit, err error) {
+func GetUnitsByBuilding(BuildingID int) (units []*model.Unit, err error) {
 	sqlStr := "select unit_id, name, building_id from units where building_id = ?"
 	rows, err := utils.Db.Query(sqlStr, BuildingID)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		unit := &Unit{}
+		unit := &model.Unit{}
 		err = rows.Scan(&unit.ID, &unit.Name, &unit.BuildingID)
 		if err != nil {
 			return nil, err
@@ -25,10 +22,10 @@ func GetUnitsByBuilding(BuildingID int) (units []*Unit, err error) {
 	return units, err
 }
 
-func GetUnitByID(ID int) (unit *Unit, err error) {
+func GetUnitByID(ID int) (unit *model.Unit, err error) {
 	sqlStr := "select unit_id, name, building_id from units where unit_id = ?"
 	row := utils.Db.QueryRow(sqlStr, ID)
-	unit = &Unit{}
+	unit = &model.Unit{}
 	err = row.Scan(&unit.ID, &unit.Name, &unit.BuildingID)
 	if err != nil {
 		return nil, err

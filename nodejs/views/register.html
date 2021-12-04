@@ -65,7 +65,7 @@
     // 实时检验手机号并提示
     $("#phone").change(function () {
         //获取用户输入的手机号
-        var phone = $(this).val();
+        let phone = $(this).val();
         if (!/^(13|14|15|17|18)[0-9]{9}$/.test(phone)) {
             $("#phone_prompt").text("请输入正确的手机号")
         } else {
@@ -74,7 +74,7 @@
     });
     // 实时检验学号并提示
     $("#stu_id").change(function () {
-        var stu_id = $(this).val();
+        let stu_id = $(this).val();
         if (!/^([0-9]{10})$/.test(stu_id)) {
             $("#stu_prompt").text("请输入正确的学号")
         } else {
@@ -83,7 +83,7 @@
     });
     // 实时检验姓名并提示
     $("#name").change(function () {
-        var name = $(this).val();
+        let name = $(this).val();
         if (!/^[\u4e00-\u9fa5]{0,10}$/.test(name)) {
             $("#name_prompt").text("请输入正确的汉语姓名")
         } else {
@@ -92,7 +92,7 @@
     });
     // 实时检验性别并提示
     $("#gender").change(function () {
-        var gender = $(this).val();
+        let gender = $(this).val();
         if (gender == "") {
             $("#gender_prompt").text("请选择性别");
         } else {
@@ -101,7 +101,7 @@
     });
     // 实时检验密码并提示
     $("#password").change(function () {
-        var password = $(this).val();
+        let password = $(this).val();
         if (!/^([\w_]{6,20})$/.test(password)) {
             $("#password_prompt").text("密码必须是6-20位的字母、数字或下划线")
         } else {

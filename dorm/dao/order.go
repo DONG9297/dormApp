@@ -1,18 +1,11 @@
-package model
+package dao
 
-import "dorm/utils"
+import (
+	"dorm/model"
+	"dorm/utils"
+)
 
-type Order struct {
-	ID         string
-	UserID     int
-	Count      int
-	BuildingID int
-	Gender     string
-	CreateTime string
-	State      int // 0 未处理， 1 成功， 2 失败
-}
-
-func AddOrder(order *Order) error {
+func AddOrder(order *model.Order) error {
 	sql := "insert into orders(order_id, user_id, count, building_id, gender, create_time, state) values(?,?,?,?,?,?,?)"
 	_, err := utils.Db.Exec(sql, order.ID, order.UserID, order.Count, order.BuildingID, order.Gender, order.CreateTime, order.State)
 	if err != nil {
@@ -21,14 +14,14 @@ func AddOrder(order *Order) error {
 	return nil
 }
 
-func GetAllOrders() (orders []*Order, err error) {
+func GetAllOrders() (orders []*model.Order, err error) {
 	sql := "select order_id, user_id, count, building_id, gender, create_time, state from orders"
 	rows, err := utils.Db.Query(sql)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		order := &Order{}
+		order := &model.Order{}
 		err := rows.Scan(&order.ID, &order.UserID, &order.Count, &order.BuildingID, &order.Gender, &order.CreateTime, &order.State)
 		if err != nil {
 			return nil, err
@@ -37,14 +30,14 @@ func GetAllOrders() (orders []*Order, err error) {
 	}
 	return orders, nil
 }
-func GetUnprocessedOrdersBefore(timeStr string) (orders []*Order, err error) {
+func GetUnprocessedOrdersBefore(timeStr string) (orders []*model.Order, err error) {
 	sql := "select order_id, user_id, count, building_id, gender, create_time, state from orders where create_time<? and state = 0 ORDER BY  create_time ASC"
 	rows, err := utils.Db.Query(sql, timeStr)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		order := &Order{}
+		order := &model.Order{}
 		err := rows.Scan(&order.ID, &order.UserID, &order.Count, &order.BuildingID, &order.Gender, &order.CreateTime, &order.State)
 		if err != nil {
 			return nil, err
@@ -54,14 +47,14 @@ func GetUnprocessedOrdersBefore(timeStr string) (orders []*Order, err error) {
 	return orders, nil
 }
 
-func GetOrdersByUserID(userID int) (orders []*Order, err error) {
+func GetOrdersByUserID(userID int) (orders []*model.Order, err error) {
 	sql := "select order_id, user_id, count, building_id, gender, create_time, state from orders where user_id = ?"
 	rows, err := utils.Db.Query(sql, userID)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		order := &Order{}
+		order := &model.Order{}
 		err := rows.Scan(&order.ID, &order.UserID, &order.Count, &order.BuildingID, &order.Gender, &order.CreateTime, &order.State)
 		if err != nil {
 			return nil, err

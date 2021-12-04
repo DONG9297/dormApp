@@ -2,21 +2,30 @@ package controller
 
 import (
 	"crypto/rand"
+	"dorm/dao"
+	"dorm/model"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 
-	"dorm/model"
 	"dorm/utils"
 )
 
 func ChooseDorm(w http.ResponseWriter, r *http.Request) {
+	// 判断是否登录
+	ok, user := utils.IsLogged(r)
+	if !ok {
+		result := utils.Result{
+			Code:    http.StatusUnauthorized,
+			Message: "未登录",
+		}
+		result.Response(w)
+		return
+	}
 	// 解析请求
 	var data struct {
-		UserID       int    `json:"user_id"`
-		Gender       string `json:"gender"`
 		BuildingName string `json:"building"`
 		StuCode0     string `json:"stucode0"`
 		StuCode1     string `json:"stucode1"`
@@ -38,17 +47,17 @@ func ChooseDorm(w http.ResponseWriter, r *http.Request) {
 	var stuCodes = [3]string{data.StuCode0, data.StuCode1, data.StuCode2}
 
 	// 判断参数是否合法
-	user, err := model.GetUserByID(data.UserID)
-	if err != nil || user.ID != data.UserID {
-		result := utils.Result{
-			Code:    http.StatusInternalServerError,
-			Message: "请求不合法",
-		}
-		result.Response(w)
-		return
-	}
+	//temp, err := dao.GetUserByID(user.ID)
+	//if err != nil || temp.ID != user.ID {
+	//	result := utils.Result{
+	//		Code:    http.StatusInternalServerError,
+	//		Message: "请求不合法",
+	//	}
+	//	result.Response(w)
+	//	return
+	//}
 
-	building, err := model.GetBuildingByName(data.BuildingName)
+	building, err := dao.GetBuildingByName(data.BuildingName)
 	if err != nil || building.Name != data.BuildingName {
 		result := utils.Result{
 			Code:    http.StatusInternalServerError,
@@ -62,8 +71,8 @@ func ChooseDorm(w http.ResponseWriter, r *http.Request) {
 	users[user.ID] = user
 	for _, stucode := range stuCodes {
 		if stucode != "" {
-			coUser, err := model.GetUserByUID(stucode)
-			if err != nil || user.ID != data.UserID {
+			coUser, err := dao.GetUserByUID(stucode)
+			if err != nil || coUser.StudentID != stucode {
 				result := utils.Result{
 					Code:    http.StatusInternalServerError,
 					Message: "同住人不存在",
@@ -81,7 +90,7 @@ func ChooseDorm(w http.ResponseWriter, r *http.Request) {
 				result.Response(w)
 				return
 			}
-			if model.HasUserChosenDorm(coUser.ID) {
+			if dao.HasUserChosenDorm(coUser.ID) {
 				result := utils.Result{
 					Code:    http.StatusInternalServerError,
 					Message: "同住人已选宿舍",
@@ -113,11 +122,11 @@ func ChooseDorm(w http.ResponseWriter, r *http.Request) {
 		UserID:     user.ID,
 		Count:      len(users),
 		BuildingID: building.ID,
-		Gender:     data.Gender,
+		Gender:     user.Gender,
 		CreateTime: timeStr,
 		State:      0,
 	}
-	err = model.AddOrder(order)
+	err = dao.AddOrder(order)
 	if err != nil {
 		result := utils.Result{
 			Code:    http.StatusInternalServerError,
@@ -133,7 +142,7 @@ func ChooseDorm(w http.ResponseWriter, r *http.Request) {
 			OrderID: uuid,
 			UserID:  user.ID,
 		}
-		err = model.AddOrderItem(orderItem)
+		err = dao.AddOrderItem(orderItem)
 		if err != nil {
 			result := utils.Result{
 				Code:    http.StatusInternalServerError,

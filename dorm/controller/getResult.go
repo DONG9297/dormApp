@@ -1,33 +1,25 @@
 package controller
 
 import (
-	"encoding/json"
+	"dorm/dao"
 	"net/http"
 
-	"dorm/model"
 	"dorm/utils"
 )
 
 func GetResult(w http.ResponseWriter, r *http.Request) {
-	// 解析请求
-	var data struct {
-		UserID int `json:"user_id"`
-	}
-	switch r.Method {
-	case http.MethodPost:
-		dec := json.NewDecoder(r.Body)
-		err := dec.Decode(&data)
-		if err != nil {
-			result := utils.Result{
-				Code:    http.StatusInternalServerError,
-				Message: "解析请求失败",
-			}
-			result.Response(w)
-			return
+	// 判断是否登录
+	ok, user := utils.IsLogged(r)
+	if !ok {
+		result := utils.Result{
+			Code:    http.StatusUnauthorized,
+			Message: "未登录",
 		}
+		result.Response(w)
+		return
 	}
 
-	dormID, err := model.GetDormIDByUserID(data.UserID)
+	dormID, err := dao.GetDormIDByUserID(user.ID)
 	if err != nil {
 		result := utils.Result{
 			Code:    http.StatusInternalServerError,
@@ -36,7 +28,7 @@ func GetResult(w http.ResponseWriter, r *http.Request) {
 		result.Response(w)
 		return
 	}
-	dormInfo, err := model.GetDormInfoByDormID(dormID)
+	dormInfo, err := dao.GetDormInfoByDormID(dormID)
 	if err != nil {
 		result := utils.Result{
 			Code:    http.StatusInternalServerError,
@@ -50,6 +42,7 @@ func GetResult(w http.ResponseWriter, r *http.Request) {
 		Code:    http.StatusOK,
 		Message: "成功",
 		Data: map[string]interface{}{
+			"user":      user,
 			"dorm_info": dormInfo,
 		},
 	}
@@ -60,26 +53,26 @@ func GetResult(w http.ResponseWriter, r *http.Request) {
 // ProcessOrder 处理时间早于timeStr发生的订单
 func ProcessOrder(timeStr string) {
 	// 获取待处理订单
-	orders, err := model.GetUnprocessedOrdersBefore(timeStr)
+	orders, err := dao.GetUnprocessedOrdersBefore(timeStr)
 	if err != nil {
 		return
 	}
 	for _, order := range orders {
-		building, err := model.GetBuildingByID(order.BuildingID)
+		building, err := dao.GetBuildingByID(order.BuildingID)
 		if err != nil {
-			model.UpdateOrderState(order.ID, 2)
+			dao.UpdateOrderState(order.ID, 2)
 			return
 		}
 		// 订单中用户是否都未选宿舍
 		flag := true
-		items, err := model.GetItemsByOrderID(order.ID)
+		items, err := dao.GetItemsByOrderID(order.ID)
 		if err != nil {
-			model.UpdateOrderState(order.ID, 2)
+			dao.UpdateOrderState(order.ID, 2)
 			return
 		}
 		for _, item := range items {
-			if model.HasUserChosenDorm(item.UserID) {
-				model.UpdateOrderState(order.ID, 2)
+			if dao.HasUserChosenDorm(item.UserID) {
+				dao.UpdateOrderState(order.ID, 2)
 				flag = false
 				break
 			}
@@ -88,26 +81,26 @@ func ProcessOrder(timeStr string) {
 			continue
 		}
 		// 获取满足订单条件的宿舍列表
-		dormInfos, err := model.GetAvailableDormInfos(order.Count, building.Name, order.Gender)
+		dormInfos, err := dao.GetAvailableDormInfos(order.Count, building.Name, order.Gender)
 		if err != nil {
-			model.UpdateOrderState(order.ID, 2)
+			dao.UpdateOrderState(order.ID, 2)
 			return
 		}
 		// 如果宿舍列表不为空
 		if len(dormInfos) > 0 {
 			dormInfo := dormInfos[0]
 			// 将选宿舍信息加入学生宿舍表
-			items, _ := model.GetItemsByOrderID(order.ID)
+			items, _ := dao.GetItemsByOrderID(order.ID)
 			for _, item := range items {
-				model.AddUserIntoDorm(item.UserID, dormInfo.DormID)
+				dao.AddUserIntoDorm(item.UserID, dormInfo.DormID)
 			}
 			// 更新宿舍空床数
 			availableBeds := dormInfo.AvailableBeds - order.Count
-			model.UpdateDormAvailableBeds(dormInfo.DormID, availableBeds)
+			dao.UpdateDormAvailableBeds(dormInfo.DormID, availableBeds)
 			// 更新订单状态
-			model.UpdateOrderState(order.ID, 1)
+			dao.UpdateOrderState(order.ID, 1)
 		} else {
-			model.UpdateOrderState(order.ID, 2)
+			dao.UpdateOrderState(order.ID, 2)
 		}
 	}
 }

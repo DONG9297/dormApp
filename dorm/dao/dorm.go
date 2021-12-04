@@ -1,27 +1,14 @@
-package model
+package dao
 
-import "dorm/utils"
+import (
+	"dorm/model"
+	"dorm/utils"
+)
 
-type Dorm struct {
-	ID            int
-	Name          string
-	Gender        string
-	TotalBeds     int
-	AvailableBeds int
-	UnitID        int
-}
-type DormInfo struct {
-	BuildingName  string `json:"building_name"`
-	UnitName      string `json:"unit_name"`
-	DormName      string `json:"dorm_name"`
-	DormID        int    `json:"dorm_id"`
-	AvailableBeds int    `json:"available_beds"`
-}
-
-func GetDormByID(ID int) (dorm *Dorm, err error) {
+func GetDormByID(ID int) (dorm *model.Dorm, err error) {
 	sqlStr := "select dorm_id, name, gender, total_beds, available_beds, unit_id from dorms where dorm_id = ?"
 	row := utils.Db.QueryRow(sqlStr, ID)
-	dorm = &Dorm{}
+	dorm = &model.Dorm{}
 	err = row.Scan(&dorm.ID, &dorm.Name, &dorm.Gender, &dorm.TotalBeds, &dorm.AvailableBeds, &dorm.UnitID)
 	if err != nil {
 		return nil, err
@@ -38,14 +25,14 @@ func UpdateDormAvailableBeds(dormID, availableBeds int) (err error) {
 	return nil
 }
 
-func GetAvailableDormInfos(availableBeds int, buildingName, gender string) (dormInfos []*DormInfo, err error) {
+func GetAvailableDormInfos(availableBeds int, buildingName, gender string) (dormInfos []*model.DormInfo, err error) {
 	sqlStr := "select building_name, unit_name, dorm_name, dorm_id, available_beds from dorm_list where building_name = ? and gender = ? and available_beds >= ?"
 	rows, err := utils.Db.Query(sqlStr, buildingName, gender, availableBeds)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		dormInfo := &DormInfo{}
+		dormInfo := &model.DormInfo{}
 		err = rows.Scan(&dormInfo.BuildingName, &dormInfo.UnitName, &dormInfo.DormName, &dormInfo.DormID, &dormInfo.AvailableBeds)
 		if err != nil {
 			return nil, err
@@ -55,10 +42,10 @@ func GetAvailableDormInfos(availableBeds int, buildingName, gender string) (dorm
 	return dormInfos, nil
 }
 
-func GetDormInfoByDormID(ID int) (*DormInfo, error) {
+func GetDormInfoByDormID(ID int) (*model.DormInfo, error) {
 	sqlStr := "select building_name, unit_name, dorm_name, dorm_id from dorm_list where dorm_id =?"
 	row := utils.Db.QueryRow(sqlStr, ID)
-	dormInfo := &DormInfo{}
+	dormInfo := &model.DormInfo{}
 	err := row.Scan(&dormInfo.BuildingName, &dormInfo.UnitName, &dormInfo.DormName, &dormInfo.DormID)
 	if err != nil {
 		return nil, err

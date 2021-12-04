@@ -33,25 +33,16 @@
     <% } %>
 </table>
 <h1>选宿舍</h1>
-<% if(gender=='女' || gender=='男'){ %>
+<% if(building_list != null){ %>
 <table>
     <tr>
         <td>选择宿舍楼：</td>
         <td>
-            <% if(gender=='女'){ %>
             <select id="building">
-                <option value="5号楼">5号楼</option>
-                <option value="13号楼">13号楼</option>
-                <option value="14号楼">14号楼</option>
+                <% building_list.forEach(function(item){ %>
+                <option value="<%= item %>"><%= item %></option>
+                <% }) %>
             </select>
-            <% } else if(gender=='男'){ %>
-            <select id="building">
-                <option value="5号楼">5号楼</option>
-                <option value="8号楼">8号楼</option>
-                <option value="9号楼">9号楼</option>
-                <option value="13号楼">13号楼</option>
-            </select>
-            <% } %>
         </td>
     </tr>
     <tr>
@@ -70,10 +61,10 @@
         <td><label id="prompt2" style="color: darkred"></label></td>
     </tr>
 </table>
+<% } %>
 <p>
     <input id="btn" type="submit" value="提交">
 </p>
-<% } %>
 <p>
     <span id="result"></span>
 </p>

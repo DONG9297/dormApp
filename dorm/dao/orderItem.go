@@ -1,27 +1,24 @@
-package model
+package dao
 
-import "dorm/utils"
+import (
+	"dorm/model"
+	"dorm/utils"
+)
 
-type OrderItem struct {
-	ID      int
-	OrderID string
-	UserID  int
-}
-
-func AddOrderItem(orderItem *OrderItem) error {
+func AddOrderItem(orderItem *model.OrderItem) error {
 	sql := "insert into order_items(order_id, user_id) values(?,?)"
 	_, err := utils.Db.Exec(sql, orderItem.OrderID, orderItem.UserID)
 	return err
 }
 
-func GetItemsByOrderID(orderID string) (orderItems []*OrderItem, err error) {
+func GetItemsByOrderID(orderID string) (orderItems []*model.OrderItem, err error) {
 	sqlStr := "select item_id, order_id, user_id from order_items where order_id = ?"
 	rows, err := utils.Db.Query(sqlStr, orderID)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		item := &OrderItem{}
+		item := &model.OrderItem{}
 		err = rows.Scan(&item.ID, &item.OrderID, &item.UserID)
 		if err != nil {
 			return nil, err

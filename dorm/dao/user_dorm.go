@@ -1,11 +1,6 @@
-package model
+package dao
 
 import "dorm/utils"
-
-type UserDorm struct {
-	UserID int
-	DormID int
-}
 
 func AddUserIntoDorm(userID, dormID int) (err error) {
 	sqlStr := "insert into user_dorm(user_id, dorm_id) values(?,?)"
